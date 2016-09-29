@@ -1221,17 +1221,30 @@
     kendo.ui.plugin(ExtContextMenu);
 
     var ExtSlideUpList = kendo.ui.Widget.extend({
-        init: function (element, options) {
+        renderView: function ()
+        {
             var that = this,
+                view = that.dataSource.view(),
+                html = kendo.render(that.itemTemplate, view),
                 tab;
 
-            kendo.ui.Widget.fn.init.call(that, element, options);
-
-            that.template = kendo.template(that.options.template || "<p><strong>#= data #</strong></p>")
             //that.template = kendo.template(that.options.template || "<div><a href='#'><img src='#=[object Object].imageURL#'></a></div>")
-            //tab = $("<div class='fixed-bottom'>#= title#</div>");
+            that.element.html(html);
 
-            //that.element.append(tab);
+            tab = $("<div>" + that.options.title + "</div>");
+            that.element.prepend(tab);
+        },
+
+        init: function (element, options) {
+            var that = this;
+
+            // Default styles definitions
+            $("<style type='text/css'>.jojo{color:red}</style>").appendTo("head");
+
+            // Initialize Default Values
+            kendo.ui.Widget.fn.init.call(that, element, options);
+            that.itemTemplate = kendo.template(that.options.itemTemplate || "<p class='jojo'><strong>#= data #</strong></p>");
+            that.title = kendo.template(that.options.title || "Items");
 
             // initialize or create dataSource
             that._dataSource();
@@ -1241,15 +1254,13 @@
             // The jQuery plugin would be jQuery.fn.kendoSlideUpList.
             name: "ExtSlideUpList",
             autoBind: true,
-            template: "",
+            itemTemplate: "",
             title: ""
         },
 
         refresh: function () {
-            var that = this,
-                view = that.dataSource.view(),
-                html = kendo.render(that.template, view);
-            that.element.html(html);
+            var that = this;
+            that.renderView();
         },
 
         _dataSource: function () {
