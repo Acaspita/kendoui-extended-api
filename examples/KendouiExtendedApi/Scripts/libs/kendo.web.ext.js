@@ -1243,7 +1243,7 @@
 
             // Initialize Default Values
             kendo.ui.Widget.fn.init.call(that, element, options);
-            that.itemTemplate = kendo.template(that.options.itemTemplate || "<p class='jojo'><strong>#= data #</strong></p>");
+            that.itemTemplate = kendo.template(that.options.itemTemplate || "<p class='jojo'><strong>#= data.title #</strong></p>");
             that.title = kendo.template(that.options.title || "Items");
 
             // initialize or create dataSource

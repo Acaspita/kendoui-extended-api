@@ -1,9 +1,17 @@
 ﻿var KendoUiExt = KendoUiExt || {};
 
 KendoUiExt.SlideUpList = function () {
-	var load = function () {
+    var load = function () {
+
+        var dataSource = new kendo.data.DataSource({
+            data: [
+              { title: "Título Imagen", imageUrl: "" },
+              { title: "Texto Imagen", imageUrl: "" }
+            ]
+        });
+
 	    $("#targetDiv").kendoExtSlideUpList({
-	        dataSource: ["Item 1", "Item 2", "Item 3", "Item 4"]
+	        dataSource: dataSource
 	    });//.data("kendoExtSlideUpList");
 	};
 
