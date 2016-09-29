@@ -1219,4 +1219,53 @@
         }
     });
     kendo.ui.plugin(ExtContextMenu);
+
+    var ExtSlideUpList = kendo.ui.Widget.extend({
+        init: function (element, options) {
+            var that = this,
+                tab;
+
+            kendo.ui.Widget.fn.init.call(that, element, options);
+
+            that.template = kendo.template(that.options.template || "<p><strong>#= data #</strong></p>")
+            //that.template = kendo.template(that.options.template || "<div><a href='#'><img src='#=[object Object].imageURL#'></a></div>")
+            //tab = $("<div class='fixed-bottom'>#= title#</div>");
+
+            //that.element.append(tab);
+
+            // initialize or create dataSource
+            that._dataSource();
+        },
+
+        options: {
+            // The jQuery plugin would be jQuery.fn.kendoExtSlideUpList.
+            name: "ExtSlideUpList",
+            autoBind: true,
+            template: "",
+            title: ""
+        },
+
+        refresh: function() {
+            var that = this,
+                view = that.dataSource.view(),
+                html = kendo.render(that.template, view);
+                that.element.html(html);
+        },
+
+        _dataSource: function () {
+            var that = this;
+            // returns the datasource OR creates one if using array or configuration
+            that.dataSource = kendo.data.DataSource.create(that.options.dataSource);
+            // bind to the change event to refresh the widget
+            that.dataSource.bind("change", function() {
+                that.refresh();
+            });
+            // trigger a read on the dataSource if one hasn't happened yet
+            if (that.options.autoBind) {
+                that.dataSource.fetch();
+            }
+        }
+    });
+    kendo.ui.plugin(ExtSlideUpList);
+
 })(window.kendo, window.kendo.jQuery);
