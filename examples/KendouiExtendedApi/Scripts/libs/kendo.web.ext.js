@@ -1224,26 +1224,43 @@
         renderView: function ()
         {
             var that = this,
-                view = that.dataSource.view(),
-                html = kendo.render(that.itemTemplate, view),
-                tab;
+                view,
+                html,
+                tab,
+                section;
 
-            //that.template = kendo.template(that.options.template || "<div><a href='#'><img src='#=[object Object].imageURL#'></a></div>")
-            that.element.html(html);
+            view = that.dataSource.view();
+            html = $.parseHTML(kendo.render(that.itemTemplate, view));
 
-            tab = $("<div>" + that.options.title + "</div>");
-            that.element.prepend(tab);
+            tab = $("<div class='k13w17-fixed-bottom'>" + that.options.title + "</div>")
+                   .on('onclick', function () {
+                       var button = $('div.k13w17-fixed-bottom').first();
+                       var section = $('section.k13w17-fixed-bottom').first();
+                       kendo.toggleClass(button, "k13w17-slide-up-button", { exclusive: "all", duration: 400, ease: "ease-out" }, !button.hasClass("k13w17-slide-up-button"));
+                       kendo.toggleClass(section, "k13w17-slide-up", { exclusive: "all", duration: 400, ease: "ease-out" }, !section.hasClass("k13w17-slide-up"));
+                   });
+            section = "<section class='k13w17-fixed-bottom'/>";
+
+            section = $(section).append(html);
+            tab = $(tab).after(section);
+
+            that.element.html(tab);
         },
 
         init: function (element, options) {
             var that = this;
 
             // Default styles definitions
-            $("<style type='text/css'>.jojo{color:red}</style>").appendTo("head");
+            $("<style type='text/css'>.k13w17-slide-up{bottom:0px !important;}</style>").appendTo("head");
+            $("<style type='text/css'>.k13w17-slide-up-button{bottom:130px !important;}</style>").appendTo("head");
+            $("<style type='text/css'>section {display: -webkit-box;overflow-x: scroll;width: 100%;position: fixed;}</style>").appendTo("head");
+            $("<style type='text/css'>.k13w17-fixed-bottom {background-color: rgba(77, 89, 90, 0.898039215686275);bottom: -130px;padding: 10px;display: -webkit-box;display: -moz-box;display: -webkit-flexbox;}</style>").appendTo("head");
+            $("<style type='text/css'>div.k13w17-fixed-bottom {border-radius: 5px;border-bottom-right-radius: 0px;border-bottom-left-radius: 0px;font-family: 'Roboto-Regular', 'Roboto';color: #FFFFFF;width: auto;padding: 10px 20px;cursor: pointer;bottom: 0px;position: fixed;}</style>").appendTo("head");
+            $("<style type='text/css'>.k13w17-fixed-bottom > div {margin-right: 15px;margin-bottom: 5px;width: 135px;height: 76px;padding: 6px;background-color: #3A87AD;color: white;display: block;}</style>").appendTo("head");
 
             // Initialize Default Values
             kendo.ui.Widget.fn.init.call(that, element, options);
-            that.itemTemplate = kendo.template(that.options.itemTemplate || "<p class='jojo'><strong>#= data.title #</strong></p>");
+            that.itemTemplate = kendo.template(that.options.itemTemplate || "<div><a href=''><img src='#= data.imageUrl #'></a></div>");
             that.title = kendo.template(that.options.title || "Items");
 
             // initialize or create dataSource
