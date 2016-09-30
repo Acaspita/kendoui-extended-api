@@ -1227,42 +1227,46 @@
                 view,
                 html,
                 tab,
-                section;
+                section,
+                parentWidth;
 
             view = that.dataSource.view();
             html = $.parseHTML(kendo.render(that.itemTemplate, view));
 
-            tab = $("<div class='k13w17-fixed-bottom'>" + that.options.title + "</div>")
-                   .on('onclick', function () {
+            tab = $("<div class='k13w17-fixed-bottom'>" + that.options.title + "<span class='k-icon k-i-arrowhead-n'></span></div>")
+                   .on('click', function () {
                        var button = $('div.k13w17-fixed-bottom').first();
                        var section = $('section.k13w17-fixed-bottom').first();
+                       button.children().first().toggleClass("k-i-arrowhead-s");
+                       button.children().first().toggleClass("k-i-arrowhead-n");
                        kendo.toggleClass(button, "k13w17-slide-up-button", { exclusive: "all", duration: 400, ease: "ease-out" }, !button.hasClass("k13w17-slide-up-button"));
                        kendo.toggleClass(section, "k13w17-slide-up", { exclusive: "all", duration: 400, ease: "ease-out" }, !section.hasClass("k13w17-slide-up"));
                    });
             section = "<section class='k13w17-fixed-bottom'/>";
-
             section = $(section).append(html);
-            tab = $(tab).after(section);
+            parentWidth = this.element.css("width");
+            section.css("width", parentWidth);
+            that.element.change(function () {
+                section.css("width", $(this).width());
+            });
 
-            that.element.html(tab);
+            that.element.append(tab);
+            that.element.append(section)
         },
 
         init: function (element, options) {
             var that = this;
-
             // Default styles definitions
+            $("<style type='text/css'>section.k13w17-fixed-bottom {display: -webkit-box;overflow-x: scroll;overflow-y: hidden;width: 100%;position: fixed;padding-left: 0px;padding-right: 0px;}</style>").appendTo("head");
+            $("<style type='text/css'>.k13w17-fixed-bottom {background-color: rgba(77, 89, 90, 0.898039215686275);bottom: -130px;padding: 10px;display: -webkit-box;display: -moz-box;display: -webkit-flexbox;display: -ms-flexbox;}</style>").appendTo("head");
+            $("<style type='text/css'>div.k13w17-fixed-bottom {border-radius: 5px;border-bottom-right-radius: 0px;border-bottom-left-radius: 0px;font-family: 'Roboto-Regular', 'Roboto';color: #FFFFFF;width: auto;padding: 10px 20px;cursor: pointer;bottom: 0px;position: fixed;display: inline-block;}</style>").appendTo("head");
+            $("<style type='text/css'>.k13w17-fixed-bottom > div {margin-right: 15px;margin-bottom: 5px;width: 135px;height: 76px;padding: 6px;background-color: #3A87AD;color: white;display: block;}</style>").appendTo("head");
             $("<style type='text/css'>.k13w17-slide-up{bottom:0px !important;}</style>").appendTo("head");
             $("<style type='text/css'>.k13w17-slide-up-button{bottom:130px !important;}</style>").appendTo("head");
-            $("<style type='text/css'>section {display: -webkit-box;overflow-x: scroll;width: 100%;position: fixed;}</style>").appendTo("head");
-            $("<style type='text/css'>.k13w17-fixed-bottom {background-color: rgba(77, 89, 90, 0.898039215686275);bottom: -130px;padding: 10px;display: -webkit-box;display: -moz-box;display: -webkit-flexbox;}</style>").appendTo("head");
-            $("<style type='text/css'>div.k13w17-fixed-bottom {border-radius: 5px;border-bottom-right-radius: 0px;border-bottom-left-radius: 0px;font-family: 'Roboto-Regular', 'Roboto';color: #FFFFFF;width: auto;padding: 10px 20px;cursor: pointer;bottom: 0px;position: fixed;}</style>").appendTo("head");
-            $("<style type='text/css'>.k13w17-fixed-bottom > div {margin-right: 15px;margin-bottom: 5px;width: 135px;height: 76px;padding: 6px;background-color: #3A87AD;color: white;display: block;}</style>").appendTo("head");
-
             // Initialize Default Values
             kendo.ui.Widget.fn.init.call(that, element, options);
             that.itemTemplate = kendo.template(that.options.itemTemplate || "<div><a href=''><img src='#= data.imageUrl #'></a></div>");
-            that.title = kendo.template(that.options.title || "Items");
-
+            that.title = kendo.template(that.options.title || "");
             // initialize or create dataSource
             that._dataSource();
         },
